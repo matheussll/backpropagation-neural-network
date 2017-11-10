@@ -1,6 +1,6 @@
-import Node from './node';
+import Neuron from './Neuron';
 
-const network = new Node(1, 3000, 0.2);
+const network = new Neuron(1, 3000, 0.2);
 
 const trainingSet = [
   { input: [10, 100], output: 0 },

@@ -1,7 +1,7 @@
 const sigmoid = value => (1 / (1 + Math.exp(-value)));
 const heaviside = value => (value >= 0 ? 1 : 0);
 
-class Node {
+class Neuron {
   constructor(bias, interactions, learnRate) {
     this.bias = bias;
     this.interactions = interactions;
@@ -60,4 +60,4 @@ class Node {
   }
 }
 
-export default Node;
+export default Neuron;
