@@ -26,11 +26,7 @@ class Network {
 
       layer.neurons.forEach((neuron) => {
         neuron.activate(neuron.inputs);
-        // console.log('neuronio da camada atual -', index, neuron);
-
-        // console.log('neuron output: ', neuron.output);
         outputs.push(neuron.output);
-        // console.log('NEURONIO DA CAMADA ', index, neuron);
       });
 
       if (this.hiddenLayers[index + 1]) {
@@ -51,11 +47,28 @@ class Network {
       neuron.error = neuron.output - expectedOutput;
     });
 
-    // this.hiddenLayers.slice().reverse().forEach((layer, index) => {
-    //   if (!index) {
-
-    //   }
-    // });
+    this.hiddenLayers.slice().reverse().forEach((layer, index) => {
+      if (!index) {
+        layer.neurons.forEach((neuron, neuronIndex) => {
+          let errorSum = 0;
+          this.outputLayer.neurons.forEach((outputLayerNeuron) => {
+            errorSum += outputLayerNeuron.weights[neuronIndex] * outputLayerNeuron.error;
+          });
+          const error = errorSum * neuron.outputDerivative;
+          neuron.error = error;
+        });
+      } else {
+        layer.neurons.forEach((neuron, neuronIndex) => {
+          let errorSum = 0;
+          this.hiddenLayers.slice().reverse()[index - 1].neurons.forEach((previousLayerNeuron) => {
+            errorSum += previousLayerNeuron.weights[neuronIndex] * previousLayerNeuron.error;
+          });
+          console.log(errorSum);
+          const error = errorSum * neuron.outputDerivative;
+          neuron.error = error;
+        });
+      }
+    });
   }
 }
 
