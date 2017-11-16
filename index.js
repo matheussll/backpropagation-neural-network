@@ -1,6 +1,7 @@
 import Neuron from './Neuron';
+import Network from './Network';
 
-const network = new Neuron(1, 3000, 0.2);
+const network = new Network(2, 3, 3, 1);
 
 const trainingSet = [
   { input: [25, 670], output: 0 },
@@ -20,5 +21,11 @@ const trainingSet = [
 const inputToPredict = [35, 740];
 
 network.trainWithoutInteractions(trainingSet);
-network.predict(inputToPredict);
+// network.predict(inputToPredict);
+console.log('Before activation: ');
+console.log('output', network.outputLayer.neurons[0]);
 
+network.forwardPropagate([0, 1]);
+
+console.log('After activation: ');
+console.log('output ', network.outputLayer.neurons[0]);

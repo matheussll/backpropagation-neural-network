@@ -26,10 +26,8 @@ class Neuron {
   trainWithoutInteractions(trainingSet) {
     this.initRandomWeights(trainingSet[0].input.length);
     let diff = 1;
-    let i = 0;
     while (diff) {
       diff = this.calculateDifferences(trainingSet);
-      i++;
     }
   }
 
