@@ -1,6 +1,7 @@
-import Neuron from './Neuron';
 import Network from './Network';
 
+/* network parameters - numberOfInputs, numberOfHiddenNeurons, numberOfHiddenLayers,
+ numberOfOutputNeurons, learningRate */
 const network = new Network(2, 3, 3, 1, 0.2);
 
 // const trainingSet = [
@@ -18,18 +19,7 @@ const network = new Network(2, 3, 3, 1, 0.2);
 //   { input: [55, 540], output: 1 },
 // ];
 
-
-// console.log('Before activation: ');
-// console.log('output ', network.hiddenLayers[2].neurons[0]);
-
 network.forwardPropagate([0, 1]);
-// console.log('After activation: ');
-// console.log('output ', network.hiddenLayers[2].neurons[0]);
-
 network.backwardsErrorPropagation(1);
-// console.log('After backward propagation: ');
-// console.log('output ', network.hiddenLayers[2].neurons[0]);
-// console.log('output ', network.hiddenLayers[1].neurons[1]);
-// console.log('output ', network.hiddenLayers[0].neurons[2]);
-network.a();
+network.calculateGradientsAndUpdateWeights();
 

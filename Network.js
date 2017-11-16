@@ -73,27 +73,7 @@ class Network {
     });
   }
 
-  calculateGradients() {
-    this.hiddenLayers.forEach((layer, index) => {
-      layer.neurons.forEach((neuron) => {
-        if (this.hiddenLayers[index + 1]) {
-          const gradients = [];
-          this.hiddenLayers[index + 1].neurons.forEach((nextLayerNeuron) => {
-            gradients.push(neuron.output * nextLayerNeuron.error);
-          });
-          neuron.weightGradients = gradients;
-        } else {
-          const gradients = [];
-          this.outputLayer.neurons.forEach((outputLayerNeuron) => {
-            gradients.push(neuron.output * outputLayerNeuron.error);
-          });
-          neuron.weightGradients = gradients;
-        }
-      });
-    });
-  }
-
-  a() {
+  calculateGradientsAndUpdateWeights() {
     this.outputLayer.neurons.forEach((outputLayerNeuron) => {
       console.log('OUTPUT NEURON BEFORE: ', outputLayerNeuron);
       const gradients = [];
