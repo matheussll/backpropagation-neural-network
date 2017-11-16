@@ -1,7 +1,7 @@
 import Neuron from './Neuron';
 import Network from './Network';
 
-const network = new Network(2, 3, 3, 1);
+const network = new Network(2, 3, 3, 1, 0.2);
 
 // const trainingSet = [
 //   { input: [25, 670], output: 0 },
@@ -27,8 +27,9 @@ network.forwardPropagate([0, 1]);
 // console.log('output ', network.hiddenLayers[2].neurons[0]);
 
 network.backwardsErrorPropagation(1);
-console.log('After backward propagation: ');
-console.log('output ', network.hiddenLayers[2].neurons[0]);
-console.log('output ', network.hiddenLayers[1].neurons[1]);
-console.log('output ', network.hiddenLayers[0].neurons[2]);
+// console.log('After backward propagation: ');
+// console.log('output ', network.hiddenLayers[2].neurons[0]);
+// console.log('output ', network.hiddenLayers[1].neurons[1]);
+// console.log('output ', network.hiddenLayers[0].neurons[2]);
+network.a();
 

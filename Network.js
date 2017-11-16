@@ -1,7 +1,7 @@
 import Layer from './Layer';
 
 class Network {
-  constructor(numberOfInputs, numberOfHiddenNeurons, numberOfHiddenLayers, numberOfOutputNeurons) {
+  constructor(numberOfInputs, numberOfHiddenNeurons, numberOfHiddenLayers, numberOfOutputNeurons, learningRate) {
     const hiddenLayers = [];
     for (let i = 0; i < numberOfHiddenNeurons; i += 1) {
       if (!hiddenLayers.length) {
@@ -14,9 +14,12 @@ class Network {
     }
     this.hiddenLayers = hiddenLayers;
     this.outputLayer = new Layer(numberOfHiddenNeurons, numberOfOutputNeurons);
+    this.inputs = [];
+    this.learningRate = learningRate;
   }
 
   forwardPropagate(inputs) {
+    this.inputs = inputs;
     this.hiddenLayers[0].neurons.forEach((neuron) => {
       neuron.inputs = inputs;
     });
@@ -63,11 +66,75 @@ class Network {
           this.hiddenLayers.slice().reverse()[index - 1].neurons.forEach((previousLayerNeuron) => {
             errorSum += previousLayerNeuron.weights[neuronIndex] * previousLayerNeuron.error;
           });
-          console.log(errorSum);
           const error = errorSum * neuron.outputDerivative;
           neuron.error = error;
         });
       }
+    });
+  }
+
+  calculateGradients() {
+    this.hiddenLayers.forEach((layer, index) => {
+      layer.neurons.forEach((neuron) => {
+        if (this.hiddenLayers[index + 1]) {
+          const gradients = [];
+          this.hiddenLayers[index + 1].neurons.forEach((nextLayerNeuron) => {
+            gradients.push(neuron.output * nextLayerNeuron.error);
+          });
+          neuron.weightGradients = gradients;
+        } else {
+          const gradients = [];
+          this.outputLayer.neurons.forEach((outputLayerNeuron) => {
+            gradients.push(neuron.output * outputLayerNeuron.error);
+          });
+          neuron.weightGradients = gradients;
+        }
+      });
+    });
+  }
+
+  a() {
+    this.outputLayer.neurons.forEach((outputLayerNeuron) => {
+      console.log('OUTPUT NEURON BEFORE: ', outputLayerNeuron);
+      const gradients = [];
+      this.hiddenLayers.slice().reverse()[0].neurons.forEach((neuron) => {
+        gradients.push(neuron.output * outputLayerNeuron.error);
+      });
+      outputLayerNeuron.weightGradients = gradients;
+      const newWeights = [];
+      outputLayerNeuron.weights.forEach((weight, weightIndex) => {
+        weight -= outputLayerNeuron.weightGradients[weightIndex] * this.learningRate;
+        newWeights.push(weight);
+      });
+      outputLayerNeuron.weights = newWeights;
+      console.log('OUTPUT NEURON AFTER: ', outputLayerNeuron);
+      console.log('===================');
+    });
+
+    this.hiddenLayers.slice().reverse().forEach((layer, layerIndex) => {
+      layer.neurons.forEach((neuron, neuronIndex) => {
+        console.log('NEURON ', neuronIndex, ' OF LAYER ', layerIndex, 'BEFORE: ', neuron);
+        const gradients = [];
+        if (this.hiddenLayers[layerIndex + 1]) {
+          this.hiddenLayers[layerIndex + 1].neurons.forEach((nextLayerNeuron) => {
+            gradients.push(nextLayerNeuron.output * neuron.error);
+          });
+        } else {
+          this.inputs.forEach((input) => {
+            gradients.push(input * neuron.error);
+          });
+        }
+        neuron.weightGradients = gradients;
+        const newWeights = [];
+
+        neuron.weights.forEach((weight, weightIndex) => {
+          weight -= neuron.weightGradients[weightIndex] * this.learningRate;
+          newWeights.push(weight);
+        });
+        neuron.weights = newWeights;
+        console.log('NEURON ', neuronIndex, ' OF LAYER ', layerIndex, 'AFTER: ', neuron);
+        console.log('===================');
+      });
     });
   }
 }

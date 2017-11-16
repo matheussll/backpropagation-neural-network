@@ -1,4 +1,4 @@
-import Neuron from './Neuron2';
+import Neuron from './Neuron';
 
 class Layer {
   constructor(numberOfInputs, numberOfNeurons) {
