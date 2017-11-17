@@ -19,7 +19,6 @@ class Network {
   }
 
   forwardPropagate(inputs) {
-    inputs.unshift(1);
     this.inputs = inputs;
     this.hiddenLayers[0].neurons.forEach((neuron) => {
       neuron.inputs = inputs;
@@ -53,6 +52,7 @@ class Network {
   backwardsErrorPropagation(expectedOutput) {
     this.outputLayer.neurons.forEach((neuron) => {
       neuron.error = neuron.output - expectedOutput;
+      console.log('network error: ', neuron.error);
     });
 
     this.hiddenLayers.slice().reverse().forEach((layer, index) => {
@@ -86,7 +86,7 @@ class Network {
 
   calculateGradientsAndUpdateWeights() {
     this.outputLayer.neurons.forEach((outputLayerNeuron) => {
-      console.log('OUTPUT NEURON BEFORE: ', outputLayerNeuron);
+      // console.log('OUTPUT NEURON BEFORE: ', outputLayerNeuron);
       const gradients = [];
       this.hiddenLayers.slice().reverse()[0].neurons.forEach((neuron) => {
         gradients.push(neuron.output * outputLayerNeuron.error);
@@ -98,13 +98,13 @@ class Network {
         newWeights.push(weight);
       });
       outputLayerNeuron.weights = newWeights;
-      console.log('OUTPUT NEURON AFTER: ', outputLayerNeuron);
-      console.log('===================');
+      // console.log('OUTPUT NEURON AFTER: ', outputLayerNeuron);
+      // console.log('===================');
     });
 
     this.hiddenLayers.slice().reverse().forEach((layer, layerIndex) => {
       layer.neurons.forEach((neuron, neuronIndex) => {
-        console.log('NEURON ', neuronIndex, ' OF LAYER ', layerIndex, 'BEFORE: ', neuron);
+        // console.log('NEURON ', neuronIndex, ' OF LAYER ', layerIndex, 'BEFORE: ', neuron);
         const gradients = [];
         if (this.hiddenLayers[layerIndex + 1]) {
           this.hiddenLayers[layerIndex + 1].neurons.forEach((nextLayerNeuron) => {
@@ -123,10 +123,27 @@ class Network {
           newWeights.push(weight);
         });
         neuron.weights = newWeights;
-        console.log('NEURON ', neuronIndex, ' OF LAYER ', layerIndex, 'AFTER: ', neuron);
-        console.log('===================');
+        // console.log('NEURON ', neuronIndex, ' OF LAYER ', layerIndex, 'AFTER: ', neuron);
+        // console.log('===================');
       });
     });
+  }
+
+  train(trainingSet, epochs) {
+    trainingSet.forEach((item) => {
+      item.input.unshift(1);
+    });
+    console.log('Training set com bias no input: ', trainingSet);
+    trainingSet.forEach((item) => {
+      this.forwardPropagate(item.input);
+      this.backwardsErrorPropagation(item.output);
+      this.calculateGradientsAndUpdateWeights();
+    });
+  }
+
+  predict(input) {
+    this.forwardPropagate(input);
+    console.log(this.outputLayer.neurons[0].output);
   }
 }
 
