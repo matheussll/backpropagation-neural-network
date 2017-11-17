@@ -3,22 +3,23 @@ import Layer from './Layer';
 class Network {
   constructor(numberOfInputs, numberOfHiddenNeurons, numberOfHiddenLayers, numberOfOutputNeurons, learningRate) {
     const hiddenLayers = [];
-    for (let i = 0; i < numberOfHiddenNeurons; i += 1) {
+    for (let i = 0; i < numberOfHiddenLayers; i += 1) {
       if (!hiddenLayers.length) {
-        const hiddenLayer = new Layer(numberOfInputs, numberOfHiddenNeurons);
+        const hiddenLayer = new Layer(numberOfInputs + 1, numberOfHiddenNeurons);
         hiddenLayers.push(hiddenLayer);
       } else {
-        const hiddenLayer = new Layer(numberOfHiddenNeurons, numberOfHiddenNeurons);
+        const hiddenLayer = new Layer(numberOfHiddenNeurons + 1, numberOfHiddenNeurons);
         hiddenLayers.push(hiddenLayer);
       }
     }
     this.hiddenLayers = hiddenLayers;
-    this.outputLayer = new Layer(numberOfHiddenNeurons, numberOfOutputNeurons);
+    this.outputLayer = new Layer(numberOfHiddenNeurons + 1, numberOfOutputNeurons, true);
     this.inputs = [];
     this.learningRate = learningRate;
   }
 
   forwardPropagate(inputs) {
+    inputs.unshift(1);
     this.inputs = inputs;
     this.hiddenLayers[0].neurons.forEach((neuron) => {
       neuron.inputs = inputs;
@@ -27,19 +28,23 @@ class Network {
     this.hiddenLayers.forEach((layer, index) => {
       const outputs = [];
 
-      layer.neurons.forEach((neuron) => {
-        neuron.activate(neuron.inputs);
+      layer.neurons.forEach((neuron, neuronIndex) => {
+        if (neuronIndex) {
+          neuron.activate(neuron.inputs);
+        }
+        // console.log('Neuronio ', neuronIndex, 'da camada ', index, ' - ', neuron);
+
         outputs.push(neuron.output);
       });
-
       if (this.hiddenLayers[index + 1]) {
         this.hiddenLayers[index + 1].neurons.forEach((neuron) => {
           neuron.inputs = outputs;
         });
       } else {
-        this.outputLayer.neurons.forEach((neuron) => {
+        this.outputLayer.neurons.forEach((neuron, neuronIndex) => {
           neuron.inputs = outputs;
           neuron.activate(neuron.inputs);
+          // console.log('Neuronio ', neuronIndex, 'da camada de output - ', neuron);
         });
       }
     });
@@ -53,21 +58,27 @@ class Network {
     this.hiddenLayers.slice().reverse().forEach((layer, index) => {
       if (!index) {
         layer.neurons.forEach((neuron, neuronIndex) => {
-          let errorSum = 0;
-          this.outputLayer.neurons.forEach((outputLayerNeuron) => {
-            errorSum += outputLayerNeuron.weights[neuronIndex] * outputLayerNeuron.error;
-          });
-          const error = errorSum * neuron.outputDerivative;
-          neuron.error = error;
+          if (neuronIndex) {
+            let errorSum = 0;
+            this.outputLayer.neurons.forEach((outputLayerNeuron) => {
+              errorSum += outputLayerNeuron.weights[neuronIndex] * outputLayerNeuron.error;
+            });
+            const error = errorSum * neuron.outputDerivative;
+            neuron.error = error;
+            // console.log('Neuronio ', neuronIndex, 'da camada de output - ', neuron);
+          }
         });
       } else {
         layer.neurons.forEach((neuron, neuronIndex) => {
-          let errorSum = 0;
-          this.hiddenLayers.slice().reverse()[index - 1].neurons.forEach((previousLayerNeuron) => {
-            errorSum += previousLayerNeuron.weights[neuronIndex] * previousLayerNeuron.error;
-          });
-          const error = errorSum * neuron.outputDerivative;
-          neuron.error = error;
+          if (neuronIndex) {
+            let errorSum = 0;
+            this.hiddenLayers.slice().reverse()[index - 1].neurons.forEach((previousLayerNeuron) => {
+              errorSum += previousLayerNeuron.weights[neuronIndex] * previousLayerNeuron.error;
+            });
+            const error = errorSum * neuron.outputDerivative;
+            neuron.error = error;
+            // console.log('Neuronio ', neuronIndex, 'da camada ', index, ' - ', neuron);
+          }
         });
       }
     });

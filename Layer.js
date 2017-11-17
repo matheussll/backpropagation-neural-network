@@ -1,15 +1,21 @@
 import Neuron from './Neuron';
 
 class Layer {
-  constructor(numberOfInputs, numberOfNeurons) {
+  constructor(numberOfInputs, numberOfNeurons, isOutputLayer) {
     this.neurons = [];
-    for (let i = 0; i < numberOfNeurons; i += 1) {
+    const amountOfNeurons = isOutputLayer ? numberOfNeurons : numberOfNeurons + 1;
+
+    for (let i = 0; i < amountOfNeurons; i += 1) {
       const neuron = new Neuron();
       const neuronWeights = [];
+
+      if (i === 0 && !isOutputLayer) {
+        neuron.output = 1;
+        neuron.outputDerivative = 1;
+      }
       for (let j = 0; j < numberOfInputs; j += 1) {
         neuronWeights.push(Math.random());
       }
-      neuron.bias = Math.random();
       neuron.weights = neuronWeights;
       this.neurons.push(neuron);
     }
