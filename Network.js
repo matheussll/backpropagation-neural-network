@@ -185,7 +185,7 @@ class Network {
     });
     // console.log('Training set com bias no input: ', trainingSet);
     // console.log(this.outputLayer.neurons[0]);
-    for (let i = 0; i < 2000; i += 1) {
+    for (let i = 0; i < 300; i += 1) {
       let sum = 0;
       trainingSet.forEach((item) => {
         this.forwardPropagate(item.input);
@@ -196,8 +196,9 @@ class Network {
       });
 
       sum /= trainingSet.length;
-      console.log('custo final da iteracao ', i, ': ', sum);
       sum += this.regularization(trainingSet.length);
+      console.log('custo final da iteracao ', i, ': ', sum);
+
     }
   }
 

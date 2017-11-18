@@ -2,7 +2,7 @@ import Network from './Network';
 
 /* network parameters - numberOfInputs, numberOfHiddenNeurons, numberOfHiddenLayers,
  numberOfOutputNeurons, learningRate, regularizationValue */
-const network = new Network(2, 3, 3, 2, 0.2, 0.2);
+const network = new Network(2, 3, 3, 2, 0.2, 0.5);
 
 // const trainingSet = [
 //   { input: [25, 670], output: 0 },
