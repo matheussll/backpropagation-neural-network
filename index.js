@@ -2,7 +2,7 @@ import Network from './Network';
 
 /* network parameters - numberOfInputs, numberOfHiddenNeurons, numberOfHiddenLayers,
  numberOfOutputNeurons, learningRate, regularizationValue */
-const network = new Network(2, 3, 3, 2, 0.2, 0.5);
+const network = new Network(2, 3, 3, 2, 0.04, 0.06);
 
 // const trainingSet = [
 //   { input: [25, 670], output: 0 },
@@ -31,8 +31,12 @@ const trainingSet = [
   { input: [0.41, 0.710], output: [1, 1] },
   { input: [0.45, 0.660], output: [1, 0] },
   { input: [0.48, 0.580], output: [1, 0] },
-  { input: [0.55, 0.540], output: [1, 1] },
+  { input: [0.15, 0.140], output: [1, 1] },
 ];
 
 network.train(trainingSet);
-// network.predict([0.55, 0.54]);
+// network.predict([0.55, 0.55]);
+// network.predict([0.41, 0.710]);
+// network.predict([0, 0]);
+// network.predict([0.55, 0.55]);
+// network.predict([0.14, 0.15]);

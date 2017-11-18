@@ -151,8 +151,10 @@ class Network {
   calculateCostFunction2(expectedOutput) {
     let sum = 0;
     this.outputLayer.neurons.forEach((neuron, neuronIndex) => {
-      let cost = -expectedOutput[neuronIndex] * Math.log(neuron.output);
-      cost += -(1 - expectedOutput[neuronIndex]) * Math.log(1 - neuron.output);
+      const e = 10 ** -8;
+      let cost = -expectedOutput[neuronIndex] * Math.log(neuron.output + e);
+      // console.log('esperado: ', expectedOutput[neuronIndex], 'obtido: ', neuron.output);
+      cost += -(1 - expectedOutput[neuronIndex]) * Math.log((1 - neuron.output) + e);
       sum += cost;
     });
     return sum;
@@ -185,7 +187,7 @@ class Network {
     });
     // console.log('Training set com bias no input: ', trainingSet);
     // console.log(this.outputLayer.neurons[0]);
-    for (let i = 0; i < 300; i += 1) {
+    for (let i = 0; i < 35; i += 1) {
       let sum = 0;
       trainingSet.forEach((item) => {
         this.forwardPropagate(item.input);
@@ -198,16 +200,17 @@ class Network {
       sum /= trainingSet.length;
       sum += this.regularization(trainingSet.length);
       console.log('custo final da iteracao ', i, ': ', sum);
-
     }
   }
 
   predict(input) {
     input.unshift(1);
     this.forwardPropagate(input);
+    const outputs = [];
     this.outputLayer.neurons.forEach((neuron) => {
-      console.log(neuron.output);
+      outputs.push(neuron.output);
     });
+    console.log('Outputs: ', outputs);
   }
 }
 
