@@ -1,8 +1,6 @@
 import Network from './Network';
-import TrainingSet from './TrainingSet';
+import TrainingSet from './XOR';
 
-/* network parameters - numberOfInputs, numberOfHiddenNeurons, numberOfHiddenLayers,
- numberOfOutputNeurons, learningRate, regularizationValue */
 
 
 // const trainingSet = [
@@ -73,6 +71,16 @@ const normalizationValues = (trainingSet) => {
 };
 
 const trainingSetNormalized = normalize(normalizationValues(TrainingSet));
-const network = new Network(trainingSetNormalized[0].input.length, 2, 2, trainingSetNormalized[0].output.length, 0.2, 0.1);
+
+console.log(trainingSetNormalized[0].output.length);
+
+/* network parameters - numberOfInputs, numberOfHiddenNeurons, numberOfHiddenLayers,
+ numberOfOutputNeurons, learningRate, regularizationValue */
+
+const network = new Network(trainingSetNormalized[0].input.length, 3, 8, trainingSetNormalized[0].output.length, 0.4, 0.2);
 
 network.train(trainingSetNormalized);
+
+trainingSetNormalized.forEach((item) => {
+  network.predict(item.output);
+});
