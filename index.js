@@ -35,7 +35,7 @@ const trainingSet = [
 
 const normalizeMinMax = (min, max, val) => {
   const delta = max - min;
-  return ((val - min) / delta);
+  return delta ? ((val - min) / delta) : 0;
 };
 
 const normalize = (normalizationValues) => {
@@ -72,12 +72,10 @@ const normalizationValues = (trainingSet) => {
 
 const trainingSetNormalized = normalize(normalizationValues(TrainingSet));
 
-console.log(trainingSetNormalized[0].output.length);
-
 /* network parameters - numberOfInputs, numberOfHiddenNeurons, numberOfHiddenLayers,
  numberOfOutputNeurons, learningRate, regularizationValue */
 
-const network = new Network(trainingSetNormalized[0].input.length, 3, 8, trainingSetNormalized[0].output.length, 0.4, 0.2);
+const network = new Network(trainingSetNormalized[0].input.length, 3, 8, trainingSetNormalized[0].output.length, 0.1, 0.1);
 
 network.train(trainingSetNormalized);
 
