@@ -11,7 +11,7 @@ class Layer {
 
       if (i === 0 && !isOutputLayer) {
         neuron.output = 1;
-        neuron.outputDerivative = 1;
+        neuron.outputDerivative = 0;
       }
       for (let j = 0; j < numberOfInputs; j += 1) {
         neuronWeights.push(Math.random());

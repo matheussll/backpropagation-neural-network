@@ -1,8 +1,9 @@
 import Network from './Network';
+import TrainingSet from './TrainingSet';
 
 /* network parameters - numberOfInputs, numberOfHiddenNeurons, numberOfHiddenLayers,
  numberOfOutputNeurons, learningRate, regularizationValue */
-const network = new Network(2, 3, 3, 2, 0.04, 0.06);
+
 
 // const trainingSet = [
 //   { input: [25, 670], output: 0 },
@@ -34,9 +35,44 @@ const trainingSet = [
   { input: [0.15, 0.140], output: [1, 1] },
 ];
 
-network.train(trainingSet);
-// network.predict([0.55, 0.55]);
-// network.predict([0.41, 0.710]);
-// network.predict([0, 0]);
-// network.predict([0.55, 0.55]);
-// network.predict([0.14, 0.15]);
+const normalizeMinMax = (min, max, val) => {
+  const delta = max - min;
+  return ((val - min) / delta);
+};
+
+const normalize = (normalizationValues) => {
+  const trainingSetToNormalize = TrainingSet;
+  trainingSetToNormalize.forEach((item) => {
+    const newInputs = [];
+    item.input.forEach((value, index) => {
+      newInputs.push(normalizeMinMax(normalizationValues.min[index], normalizationValues.max[index], value));
+    });
+    item.input = newInputs;
+  });
+  return trainingSetToNormalize;
+};
+
+const normalizationValues = (trainingSet) => {
+  const separatedArray = [];
+  trainingSet[0].input.forEach(() => {
+    separatedArray.push([]);
+  });
+
+  trainingSet.forEach((item) => {
+    item.input.forEach((input, index) => {
+      separatedArray[index].push(input);
+    });
+  });
+  const min = [];
+  const max = [];
+  separatedArray.forEach((array) => {
+    min.push(Math.min(...array));
+    max.push(Math.max(...array));
+  });
+  return { min, max };
+};
+
+const trainingSetNormalized = normalize(normalizationValues(TrainingSet));
+const network = new Network(trainingSetNormalized[0].input.length, 2, 2, trainingSetNormalized[0].output.length, 0.2, 0.1);
+
+network.train(trainingSetNormalized);

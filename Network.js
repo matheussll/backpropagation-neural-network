@@ -32,8 +32,6 @@ class Network {
         if (neuronIndex) {
           neuron.activate(neuron.inputs);
         }
-        // console.log('Neuronio ', neuronIndex, 'da camada ', index, ' - ', neuron);
-
         outputs.push(neuron.output);
       });
       if (this.hiddenLayers[index + 1]) {
@@ -44,7 +42,9 @@ class Network {
         this.outputLayer.neurons.forEach((neuron, neuronIndex) => {
           neuron.inputs = outputs;
           neuron.activate(neuron.inputs);
-          // console.log('Neuronio ', neuronIndex, 'da camada de output - ', neuron);
+          if (neuronIndex) {
+            console.log('Neuronio ', neuronIndex, 'da camada de output: ', neuron.output);
+          }
         });
       }
     });
@@ -52,8 +52,8 @@ class Network {
 
   backwardsErrorPropagation(expectedOutput) {
     this.outputLayer.neurons.forEach((neuron, neuronIndex) => {
-      neuron.error = neuron.output - expectedOutput[neuronIndex];
-      // console.log('network error: ', neuron.error);
+      neuron.error = (neuron.output - expectedOutput[neuronIndex]) * neuron.outputDerivative;
+      // console.log('network error: ', neuron.outputDerivative);
     });
 
     this.hiddenLayers.slice().reverse().forEach((layer, index) => {
@@ -85,7 +85,8 @@ class Network {
     });
   }
 
-  calculateGradientsAndUpdateWeights() {
+  calculateGradientsAndUpdateWeights(output) {
+    const cost = this.calculateCostFunction2(output);
     this.outputLayer.neurons.forEach((outputLayerNeuron) => {
       // console.log('OUTPUT NEURON BEFORE: ', outputLayerNeuron.weights);
       const gradients = [];
@@ -97,7 +98,7 @@ class Network {
       outputLayerNeuron.weightGradients = gradients;
       const newWeights = [];
       outputLayerNeuron.weights.forEach((weight, weightIndex) => {
-        weight -= outputLayerNeuron.weightGradients[weightIndex] * this.learningRate;
+        weight -= outputLayerNeuron.weightGradients[weightIndex] * this.learningRate * cost;
         newWeights.push(weight);
       });
       outputLayerNeuron.weights = newWeights;
@@ -130,7 +131,7 @@ class Network {
         const newWeights = [];
 
         neuron.weights.forEach((weight, weightIndex) => {
-          weight -= neuron.weightGradients[weightIndex] * this.learningRate;
+          weight -= neuron.weightGradients[weightIndex] * this.learningRate * cost;
           newWeights.push(weight);
         });
         neuron.weights = newWeights;
@@ -160,6 +161,10 @@ class Network {
     return sum;
   }
 
+  gradientValidation() {
+
+  }
+
   regularization(trainingSetLength) {
     let sum = 0;
     this.outputLayer.neurons.forEach((neuron) => {
@@ -187,20 +192,20 @@ class Network {
     });
     // console.log('Training set com bias no input: ', trainingSet);
     // console.log(this.outputLayer.neurons[0]);
-    for (let i = 0; i < 35; i += 1) {
-      let sum = 0;
-      trainingSet.forEach((item) => {
-        this.forwardPropagate(item.input);
-        this.backwardsErrorPropagation(item.output);
-        this.calculateGradientsAndUpdateWeights();
-        const cost = this.calculateCostFunction2(item.output);
-        sum += cost;
-      });
-
-      sum /= trainingSet.length;
-      sum += this.regularization(trainingSet.length);
-      console.log('custo final da iteracao ', i, ': ', sum);
-    }
+    // for (let i = 0; i < 20; i += 1) {
+    let sum = 0;
+    trainingSet.forEach((item, j) => {
+      this.forwardPropagate(item.input);
+      this.backwardsErrorPropagation(item.output);
+      this.calculateGradientsAndUpdateWeights(item.output);
+      const cost = this.calculateCostFunction(item.output);
+      console.log('custo do input ', j, ': ', cost);
+      sum += cost;
+    });
+    sum /= trainingSet.length;
+    sum += this.regularization(trainingSet.length);
+    console.log('custo final: ', sum);
+    // }
   }
 
   predict(input) {
@@ -210,7 +215,7 @@ class Network {
     this.outputLayer.neurons.forEach((neuron) => {
       outputs.push(neuron.output);
     });
-    console.log('Outputs: ', outputs);
+    // console.log('Outputs: ', outputs);
   }
 }
 
