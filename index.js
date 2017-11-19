@@ -34,6 +34,9 @@ const trainingSet = [
 ];
 
 const normalizeMinMax = (min, max, val) => {
+  if (max === min) {
+    min = 0;
+  }
   const delta = max - min;
   return delta ? ((val - min) / delta) : 0;
 };
@@ -70,12 +73,18 @@ const normalizationValues = (trainingSet) => {
   return { min, max };
 };
 
+const a = TrainingSet;
 const trainingSetNormalized = normalize(normalizationValues(TrainingSet));
 
 /* network parameters - numberOfInputs, numberOfHiddenNeurons, numberOfHiddenLayers,
  numberOfOutputNeurons, learningRate, regularizationValue */
 
-const network = new Network(trainingSetNormalized[0].input.length, 3, 8, trainingSetNormalized[0].output.length, 0.1, 0.1);
+
+const network = new Network(trainingSetNormalized[0].input.length, 2, 1, trainingSetNormalized[0].output.length, 0.2, 0.01);
+
+network.hiddenLayers[0].neurons[1].weights = [0.36449279348403785, 0.056698228708220055, 0.962149304287057];
+network.hiddenLayers[0].neurons[2].weights = [0.7609116098510047, 0.47408399602275386, 0.28207868902918354];
+network.outputLayer.neurons[0].weights = [0.3265604394066415, 0.8352813420165219, 0.4122636456119215];
 
 network.train(trainingSetNormalized);
 
