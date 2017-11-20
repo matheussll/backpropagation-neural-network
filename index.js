@@ -78,17 +78,7 @@ const trainingSetNormalized = normalize(normalizationValues(TrainingSet));
 
 /* network parameters - numberOfInputs, numberOfHiddenNeurons, numberOfHiddenLayers,
  numberOfOutputNeurons, learningRate, regularizationValue */
-
-
-const network = new Network(trainingSetNormalized[0].input.length, 2, 2, trainingSetNormalized[0].output.length, 0.2, 0);
-
-network.hiddenLayers[0].neurons[1].weights = [0.36449279348403785, 0.056698228708220055, 0.962149304287057];
-network.hiddenLayers[0].neurons[2].weights = [0.7609116098510047, 0.47408399602275386, 0.28207868902918354];
-
-network.hiddenLayers[1].neurons[1].weights = [0.06363118331889916, 0.1501699060755619, 0.4933759734192569];
-network.hiddenLayers[1].neurons[2].weights = [0.6611255020002691, 0.11955570868044108, 0.42568609774091004];
-
-network.outputLayer.neurons[0].weights = [0.3265604394066415, 0.8352813420165219, 0.4122636456119215];
+const network = new Network(trainingSetNormalized[0].input.length, 10, 3, trainingSetNormalized[0].output.length, 0.9, 0);
 
 network.train(trainingSetNormalized);
 

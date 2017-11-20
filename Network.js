@@ -42,7 +42,6 @@ class Network {
         this.outputLayer.neurons.forEach((neuron) => {
           neuron.inputs = outputs;
           neuron.activate(neuron.inputs);
-          // console.log('output: ', neuron.output);
         });
       }
     });
@@ -51,9 +50,7 @@ class Network {
   backwardsErrorPropagation(expectedOutput) {
     this.outputLayer.neurons.forEach((neuron, neuronIndex) => {
       neuron.error = (neuron.output - expectedOutput[neuronIndex]);
-      // console.log('erro: ', neuron.error, 'output: ', neuron.output, 'esperado: ', expectedOutput[neuronIndex]);
     });
-    // console.log('===========================================');
     this.hiddenLayers.slice().reverse().forEach((layer, index) => {
       if (!index) {
         layer.neurons.forEach((neuron, neuronIndex) => {
@@ -75,7 +72,6 @@ class Network {
             });
             const error = errorSum * neuron.outputDerivative;
             neuron.error = error;
-            // console.log('Neuronio ', neuronIndex, 'da camada ', index, ' - ', neuron);
           }
         });
       }
@@ -84,7 +80,6 @@ class Network {
 
   calculateGradientsAndUpdateWeights() {
     this.outputLayer.neurons.forEach((outputLayerNeuron) => {
-      // console.log('OUTPUT NEURON BEFORE: ', outputLayerNeuron.weights);
       const gradients = [];
       this.hiddenLayers.slice().reverse()[0].neurons.forEach((neuron, neuronIndex) => {
         let gradient = neuron.output * outputLayerNeuron.error;
@@ -98,27 +93,24 @@ class Network {
         newWeights.push(weight);
       });
       outputLayerNeuron.weights = newWeights;
-      // console.log('OUTPUT NEURON ', outputLayerNeuron.error);
-      // console.log('===================');
     });
 
-    this.hiddenLayers.slice().reverse().forEach((layer, layerIndex) => {
+    this.hiddenLayers.forEach((layer, layerIndex) => {
       layer.neurons.forEach((neuron) => {
-        // console.log('NEURON ', neuronIndex, ' OF LAYER ', layerIndex, 'BEFORE: ', neuron.weights);
         const gradients = [];
-        if (this.hiddenLayers[layerIndex + 1]) {
-          this.hiddenLayers[layerIndex + 1].neurons.forEach((nextLayerNeuron, nextLayerNeuronIndex) => {
-            let gradient = nextLayerNeuron.output * neuron.error;
-            if (nextLayerNeuronIndex) {
-              gradient += this.regularizationValue * neuron.weights[nextLayerNeuronIndex];
-            }
-            gradients.push(gradient);
-          });
-        } else {
+        if (!layerIndex) {
           this.inputs.forEach((input, inputIndex) => {
             let gradient = input * neuron.error;
             if (inputIndex) {
               gradient += this.regularizationValue * neuron.weights[inputIndex];
+            }
+            gradients.push(gradient);
+          });
+        } else {
+          this.hiddenLayers[layerIndex - 1].neurons.forEach((previousLayerNeuron, previousLayerNeuronIndex) => {
+            let gradient = previousLayerNeuron.output * neuron.error;
+            if (previousLayerNeuronIndex) {
+              gradient += this.regularizationValue * neuron.weights[previousLayerNeuronIndex];
             }
             gradients.push(gradient);
           });
@@ -131,8 +123,6 @@ class Network {
           newWeights.push(weight);
         });
         neuron.weights = newWeights;
-        // console.log('NEURON ', neuronIndex, ' OF LAYER ', layerIndex, 'GRADIENTS: ', neuron.weightGradients, ' , ERROR: ', neuron.error);
-        // console.log('===================');
       });
     });
   }
@@ -150,7 +140,6 @@ class Network {
     this.outputLayer.neurons.forEach((neuron, neuronIndex) => {
       const e = 10 ** -8;
       let cost = -expectedOutput[neuronIndex] * Math.log(neuron.output + e);
-      // console.log('esperado: ', expectedOutput[neuronIndex], 'obtido: ', neuron.output);
       cost += -(1 - expectedOutput[neuronIndex]) * Math.log((1 - neuron.output) + e);
       sum += cost;
     });
@@ -189,12 +178,10 @@ class Network {
         this.backwardsErrorPropagation(item.output);
         this.calculateGradientsAndUpdateWeights();
         const cost = this.calculateCostFunction(item.output);
-        // console.log('custo do input ', j, ': ', cost);
         sum += cost;
       });
       sum /= trainingSet.length;
       sum += this.regularization(trainingSet.length);
-      // console.log('custo final: ', sum);
     }
   }
 
