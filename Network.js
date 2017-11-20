@@ -171,7 +171,7 @@ class Network {
     trainingSet.forEach((item) => {
       item.input.unshift(1);
     });
-    for (let i = 0; i < 200000; i += 1) {
+    for (let i = 0; i < 20000; i += 1) {
       let sum = 0;
       trainingSet.forEach((item) => {
         this.forwardPropagate(item.input);
@@ -182,6 +182,7 @@ class Network {
       });
       sum /= trainingSet.length;
       sum += this.regularization(trainingSet.length);
+      console.log('custo final: ', sum);
     }
   }
 
