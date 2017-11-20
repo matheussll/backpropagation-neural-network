@@ -51,9 +51,9 @@ class Network {
   backwardsErrorPropagation(expectedOutput) {
     this.outputLayer.neurons.forEach((neuron, neuronIndex) => {
       neuron.error = (neuron.output - expectedOutput[neuronIndex]);
-      console.log('erro: ', neuron.error, 'output: ', neuron.output, 'esperado: ', expectedOutput[neuronIndex]);
+      // console.log('erro: ', neuron.error, 'output: ', neuron.output, 'esperado: ', expectedOutput[neuronIndex]);
     });
-    console.log('===========================================');
+    // console.log('===========================================');
     this.hiddenLayers.slice().reverse().forEach((layer, index) => {
       if (!index) {
         layer.neurons.forEach((neuron, neuronIndex) => {
@@ -182,7 +182,7 @@ class Network {
     trainingSet.forEach((item) => {
       item.input.unshift(1);
     });
-    for (let i = 0; i < 200; i += 1) {
+    for (let i = 0; i < 200000; i += 1) {
       let sum = 0;
       trainingSet.forEach((item) => {
         this.forwardPropagate(item.input);
@@ -205,7 +205,7 @@ class Network {
     this.outputLayer.neurons.forEach((neuron) => {
       outputs.push(neuron.output);
     });
-    // console.log('Outputs: ', outputs);
+    console.log('Outputs: ', outputs);
   }
 }
 
