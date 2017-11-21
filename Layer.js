@@ -10,7 +10,7 @@ class Layer {
       const neuronWeights = [];
 
       if (i === 0 && !isOutputLayer) {
-        neuron.output = 1;
+        neuron.output = 0;
         neuron.outputDerivative = 0;
       }
       for (let j = 0; j < numberOfInputs; j += 1) {

@@ -24,13 +24,15 @@ class Network {
     this.hiddenLayers[0].neurons.forEach((neuron) => {
       neuron.inputs = inputs;
     });
-
+    this.hiddenLayers[0].neurons[1].weights = [0, 0.39];/////////////////////////////////////////////
+    
     this.hiddenLayers.forEach((layer, index) => {
       const outputs = [];
 
       layer.neurons.forEach((neuron, neuronIndex) => {
         if (neuronIndex) {
           neuron.activate(neuron.inputs);
+          console.log('neuron', neuronIndex, 'da camada', index, 'tem ativação = ', neuron.output);/////////////////////////////////////////////
         }
         outputs.push(neuron.output);
       });
@@ -41,7 +43,10 @@ class Network {
       } else {
         this.outputLayer.neurons.forEach((neuron) => {
           neuron.inputs = outputs;
+          this.outputLayer.neurons[0].weights = [0, 0.94];/////////////////////////////////////////////          
           neuron.activate(neuron.inputs);
+          console.log('neuron',  'da ult camada', 'tem ativação = ', neuron.output);/////////////////////////////////////////////
+          
         });
       }
     });
@@ -50,6 +55,8 @@ class Network {
   backwardsErrorPropagation(expectedOutput) {
     this.outputLayer.neurons.forEach((neuron, neuronIndex) => {
       neuron.error = (neuron.output - expectedOutput[neuronIndex]);
+      console.log('neuron',  'da ult camada', 'tem erro = ', neuron.error);/////////////////////////////////////////////
+      
     });
     this.hiddenLayers.slice().reverse().forEach((layer, index) => {
       if (!index) {
@@ -61,6 +68,9 @@ class Network {
             });
             const error = errorSum * neuron.outputDerivative;
             neuron.error = error;
+            console.log('neuron', neuronIndex, 'da camada', index, 'tem erro = ', neuron.error);/////////////////////////////////////////////
+            
+            
           }
         });
       } else {
@@ -84,6 +94,7 @@ class Network {
       this.hiddenLayers.slice().reverse()[0].neurons.forEach((neuron, neuronIndex) => {
         let gradient = neuron.output * outputLayerNeuron.error;
         gradient += this.regularizationValue * outputLayerNeuron.weights[neuronIndex];
+        console.log('Gradiente da conexão N1_Output:', gradient,  '=', neuron.output, '*', outputLayerNeuron.error);  /////////////////////////////////
         gradients.push(gradient);
       });
       outputLayerNeuron.weightGradients = gradients;
@@ -103,6 +114,8 @@ class Network {
             let gradient = input * neuron.error;
             if (inputIndex) {
               gradient += this.regularizationValue * neuron.weights[inputIndex];
+              console.log('Gradiente da conexão Input_N1:', gradient,  '=', input, '*', neuron.error);  /////////////////////////////////
+              
             }
             gradients.push(gradient);
           });
@@ -169,11 +182,12 @@ class Network {
 
   train(trainingSet) {
     trainingSet.forEach((item) => {
-      item.input.unshift(1);
+      item.input.unshift(0);/////////////////////////////////////////////
     });
-    for (let i = 0; i < 20000; i += 1) {
+    for (let i = 0; i < 1; i += 1) {
       let sum = 0;
       trainingSet.forEach((item) => {
+        console.log(item.input); /////////////////////////////////////////////
         this.forwardPropagate(item.input);
         this.backwardsErrorPropagation(item.output);
         this.calculateGradientsAndUpdateWeights();
