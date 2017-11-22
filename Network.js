@@ -32,6 +32,7 @@ class Network {
 
       layer.neurons.forEach((neuron, neuronIndex) => {
         if (neuronIndex) {
+          //console.log('neuron', neuronIndex, 'da camada', index);/////////////////////////////////////////////          
           neuron.activate(neuron.inputs);
           //console.log('neuron', neuronIndex, 'da camada', index, 'tem ativação = ', neuron.output);/////////////////////////////////////////////
         }
@@ -56,7 +57,7 @@ class Network {
   backwardsErrorPropagation(expectedOutput) {
     this.outputLayer.neurons.forEach((neuron, neuronIndex) => {
       neuron.error = (neuron.output - expectedOutput[neuronIndex]);
-      //console.log('neuron',  'da ult camada', 'tem erro = ', neuron.error);/////////////////////////////////////////////
+      // console.log('neuron',  'da ult camada', 'tem erro = ', neuron.error);/////////////////////////////////////////////
       
     });
     this.hiddenLayers.slice().reverse().forEach((layer, index) => {
@@ -69,7 +70,7 @@ class Network {
             });
             const error = errorSum * neuron.outputDerivative;
             neuron.error = error;
-            //console.log('neuron', neuronIndex, 'da camada', index, 'tem erro = ', neuron.error);/////////////////////////////////////////////
+            // console.log('neuron', neuronIndex, 'da camada', index, 'tem erro = ', neuron.error);/////////////////////////////////////////////
             
             
           }
@@ -186,12 +187,13 @@ class Network {
 
   train(trainingSet) {
     trainingSet.forEach((item) => {
-      item.input.unshift(0);/////////////////////////////////////////////
+      item.input.unshift(10);/////////////////////////////////////////////
+
     });
     for (let i = 0; i < 1000; i += 1) {
       let sum = 0;
       trainingSet.forEach((item) => {
-        console.log(item.input); /////////////////////////////////////////////
+        //console.log('mamaçao', item.input); /////////////////////////////////////////////
         this.forwardPropagate(item.input);
         this.backwardsErrorPropagation(item.output);
         this.calculateGradientsAndUpdateWeights();
