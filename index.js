@@ -45,12 +45,13 @@ const normalizationValues = (trainingSet) => {
 
 /* network parameters - numberOfInputs, numberOfHiddenNeurons, numberOfHiddenLayers,
  numberOfOutputNeurons, learningRate, regularizationValue */
-const network = new Network(TrainingSet[0].input.length, 1, 1, TrainingSet[0].output.length, 1, 0);
+const network = new Network(TrainingSet[0].input.length, 7, 10, TrainingSet[0].output.length, 0.1, 0);
 
 //network.train(trainingSetNormalized);
-console.log(TrainingSet); /////////////////////////////////////////////
+//console.log(TrainingSet); /////////////////////////////////////////////
 network.train(TrainingSet); /////////////////////////////////////////////
 
-// trainingSetNormalized.forEach((item) => {
-//   network.predict(item.output);
-// });
+//trainingSetNormalized.forEach((item) => {
+TrainingSet.forEach((item) => {
+  network.predict(item.output);
+});

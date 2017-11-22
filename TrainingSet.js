@@ -1,5 +1,5 @@
 const trainingSet = [
-  { input: [1.5], output: [1] },
+  { input: [0.81, 0.32], output: [0.3, 0.9] },
   // { input: [30, 62, 3], output: [0] },
   // { input: [30, 65, 0], output: [0] },
   // { input: [31, 59, 2], output: [0] },
