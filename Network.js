@@ -20,6 +20,7 @@ class Network {
   }
 
   forwardPropagate(inputs) {
+    // console.log(this);
     this.inputs = inputs;
     this.hiddenLayers[0].neurons.forEach((neuron) => {
       neuron.inputs = inputs;
@@ -34,7 +35,7 @@ class Network {
         if (neuronIndex) {
           //console.log('neuron', neuronIndex, 'da camada', index);/////////////////////////////////////////////          
           neuron.activate(neuron.inputs);
-          //console.log('neuron', neuronIndex, 'da camada', index, 'tem ativação = ', neuron.output);/////////////////////////////////////////////
+          // console.log('neuron', neuronIndex, 'da camada', index, 'tem ativação = ', neuron.output);/////////////////////////////////////////////
         }
         outputs.push(neuron.output);
       });
@@ -45,10 +46,11 @@ class Network {
       } else {
         this.outputLayer.neurons.forEach((neuron) => {
           neuron.inputs = outputs;
+          // console.log(neuron.inputs);
           //this.outputLayer.neurons[0].weights = [0, 0.55];/////////////////////////////////////////////          
           neuron.activate(neuron.inputs);
+          // console.log(neuron.output);
           console.log('neuron',  'da ult camada', 'tem ativação = ', neuron.output);/////////////////////////////////////////////
-          
         });
       }
     });
@@ -97,6 +99,7 @@ class Network {
       const gradients = [];
       this.hiddenLayers.slice().reverse()[0].neurons.forEach((neuron, neuronIndex) => {
         let gradient = neuron.output * outputLayerNeuron.error;
+        
         gradient += this.regularizationValue * outputLayerNeuron.weights[neuronIndex];
         //console.log('Gradiente da conexão N1_Output:', gradient,  '=', neuron.output, '*', outputLayerNeuron.error);  /////////////////////////////////
         gradients.push(gradient);
@@ -208,7 +211,7 @@ class Network {
   }
 
   predict(input) {
-    //input.unshift(1);
+    input.unshift(1);
     this.forwardPropagate(input);
     const outputs = [];
     this.outputLayer.neurons.forEach((neuron) => {

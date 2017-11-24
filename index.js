@@ -1,5 +1,6 @@
 import Network from './Network';
-import TrainingSet from './TrainingSet';
+import TrainingSet from './TrainingSet2';
+import CrossValidation from './CrossValidation';
 
 const normalizeMinMax = (min, max, val) => {
   if (max === min) {
@@ -41,17 +42,27 @@ const normalizationValues = (trainingSet) => {
   return { min, max };
 };
 
-const trainingSetNormalized = normalize(normalizationValues(TrainingSet)); /////////////////////////////////////////////
+const trainingSetNormalized = normalize(normalizationValues(TrainingSet));
 
 /* network parameters - numberOfInputs, numberOfHiddenNeurons, numberOfHiddenLayers,
  numberOfOutputNeurons, learningRate, regularizationValue */
-const network = new Network(TrainingSet[0].input.length, 2, 2, TrainingSet[0].output.length, 0.5, 0.30);
 
-//console.log(trainingSetNormalized); /////////////////////////////////////////////
-network.train(trainingSetNormalized);
-//network.train(TrainingSet); /////////////////////////////////////////////
+const networks = [];
+const networksParamsToTest = [
+  { hiddenNeurons: 5, hiddenLayers: 3, learningRate: 0.5, regularizationValue: 0.002 },
+  { hiddenNeurons: 1, hiddenLayers: 1, learningRate: 0.5, regularizationValue: 0.3 },
+  { hiddenNeurons: 2, hiddenLayers: 2, learningRate: 0.8, regularizationValue: 0.3 },
+  { hiddenNeurons: 2, hiddenLayers: 1, learningRate: 0.1, regularizationValue: 0.1 },
+  { hiddenNeurons: 2, hiddenLayers: 1, learningRate: 0.1, regularizationValue: 0.1 },
+];
 
-trainingSetNormalized.forEach((item) => {
-  //console.log('predictmamado', item.input);
-  network.predict(item.input);
+networksParamsToTest.forEach((param) => {
+  const { hiddenNeurons, hiddenLayers, learningRate, regularizationValue } = param;
+  const network = new Network(trainingSetNormalized[0].input.length, hiddenNeurons, hiddenLayers, trainingSetNormalized[0].output.length, learningRate, regularizationValue);
+  networks.push(network);
 });
+
+const crossValidation = new CrossValidation(trainingSetNormalized, networks);
+// const network = new Network(trainingSetNormalized[0].input.length, networksParamsToTest[0].hiddenNeurons, networksParamsToTest[0].hiddenLayers, trainingSetNormalized[0].output.length, networksParamsToTest[0].learningRate, networksParamsToTest[0].regularizationValue);
+
+crossValidation.train();

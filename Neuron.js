@@ -15,7 +15,7 @@ class Neuron {
     let activationValue = 0;
     //console.log('inputs ', inputs);  /////////////////////////////////////////////
     //console.log('weights ', this.weights);  /////////////////////////////////////////////
-
+    // console.log(inputs);
     inputs.forEach((input, index) => {
       activationValue += input * this.weights[index];
     });
