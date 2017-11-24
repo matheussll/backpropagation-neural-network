@@ -57,7 +57,7 @@ class Network {
   backwardsErrorPropagation(expectedOutput) {
     this.outputLayer.neurons.forEach((neuron, neuronIndex) => {
       neuron.error = (neuron.output - expectedOutput[neuronIndex]);
-      // console.log('neuron',  'da ult camada', 'tem erro = ', neuron.error);/////////////////////////////////////////////
+      console.log('neuron',  'da ult camada', 'tem erro = ', neuron.error);/////////////////////////////////////////////
       
     });
     this.hiddenLayers.slice().reverse().forEach((layer, index) => {
@@ -187,10 +187,10 @@ class Network {
 
   train(trainingSet) {
     trainingSet.forEach((item) => {
-      item.input.unshift(10);/////////////////////////////////////////////
+      item.input.unshift(1);/////////////////////////////////////////////
 
     });
-    for (let i = 0; i < 1000; i += 1) {
+    for (let i = 0; i < 5000; i += 1) {
       let sum = 0;
       trainingSet.forEach((item) => {
         //console.log('mamaçao', item.input); /////////////////////////////////////////////
@@ -199,7 +199,7 @@ class Network {
         this.calculateGradientsAndUpdateWeights();
         const cost = this.calculateCostFunction(item.output);
         sum += cost;
-        console.log('=================================================================================');
+        //console.log('=================================================================================');
       });
       sum /= trainingSet.length;
       sum += this.regularization(trainingSet.length);
@@ -208,13 +208,13 @@ class Network {
   }
 
   predict(input) {
-    input.unshift(0);
+    //input.unshift(1);
     this.forwardPropagate(input);
     const outputs = [];
     this.outputLayer.neurons.forEach((neuron) => {
       outputs.push(neuron.output);
     });
-    console.log('Outputs: ', outputs);
+    //console.log('Outputs: ', outputs);
   }
 }
 

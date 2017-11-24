@@ -45,13 +45,13 @@ const trainingSetNormalized = normalize(normalizationValues(TrainingSet)); /////
 
 /* network parameters - numberOfInputs, numberOfHiddenNeurons, numberOfHiddenLayers,
  numberOfOutputNeurons, learningRate, regularizationValue */
-const network = new Network(TrainingSet[0].input.length, 2, 2, TrainingSet[0].output.length, 0.7, 0);
+const network = new Network(TrainingSet[0].input.length, 2, 2, TrainingSet[0].output.length, 0.5, 0.30);
 
-console.log(trainingSetNormalized); /////////////////////////////////////////////
+//console.log(trainingSetNormalized); /////////////////////////////////////////////
 network.train(trainingSetNormalized);
 //network.train(TrainingSet); /////////////////////////////////////////////
 
 trainingSetNormalized.forEach((item) => {
-//TrainingSet.forEach((item) => {
- // network.predict(item.output);
+  //console.log('predictmamado', item.input);
+  network.predict(item.input);
 });
