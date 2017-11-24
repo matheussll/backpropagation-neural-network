@@ -63,6 +63,7 @@ networksParamsToTest.forEach((param) => {
 });
 
 const crossValidation = new CrossValidation(trainingSetNormalized, networks);
-// const network = new Network(trainingSetNormalized[0].input.length, networksParamsToTest[0].hiddenNeurons, networksParamsToTest[0].hiddenLayers, trainingSetNormalized[0].output.length, networksParamsToTest[0].learningRate, networksParamsToTest[0].regularizationValue);
+const network = new Network(trainingSetNormalized[0].input.length, networksParamsToTest[0].hiddenNeurons, networksParamsToTest[0].hiddenLayers, trainingSetNormalized[0].output.length, networksParamsToTest[0].learningRate, networksParamsToTest[0].regularizationValue);
 
-crossValidation.train();
+network.train(trainingSetNormalized);
+// crossValidation.train();

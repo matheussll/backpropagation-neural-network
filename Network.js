@@ -43,7 +43,7 @@ class Network {
           neuron.inputs = outputs;
           neuron.activate(neuron.inputs);
           // console.log(neuron.output);
-          // console.log('neuron da ult camada tem ativação = ', neuron.output);/////////////////////////////////////////////
+          console.log('neuron da ult camada tem ativação = ', neuron.output);/////////////////////////////////////////////
         });
       }
     });
@@ -53,8 +53,7 @@ class Network {
     this.outputLayer.neurons.forEach((neuron, neuronIndex) => {
       neuron.error = (neuron.output - expectedOutput[neuronIndex]);
     });
-    const hiddenLayers = JSON.parse(JSON.stringify(this.hiddenLayers));
-    hiddenLayers.reverse().forEach((layer, index) => {
+    this.hiddenLayers.slice().reverse().forEach((layer, index) => {
       if (!index) {
         layer.neurons.forEach((neuron, neuronIndex) => {
           if (neuronIndex) {
@@ -70,8 +69,7 @@ class Network {
         layer.neurons.forEach((neuron, neuronIndex) => {
           if (neuronIndex) {
             let errorSum = 0;
-            const hiddenLayers = JSON.parse(JSON.stringify(this.hiddenLayers));
-            hiddenLayers.reverse()[index - 1].neurons.forEach((previousLayerNeuron) => {
+            this.hiddenLayers.slice().reverse()[index - 1].neurons.forEach((previousLayerNeuron) => {
               errorSum += previousLayerNeuron.weights[neuronIndex] * previousLayerNeuron.error;
             });
             const error = errorSum * neuron.outputDerivative;
@@ -85,8 +83,7 @@ class Network {
   calculateGradientsAndUpdateWeights() {
     this.outputLayer.neurons.forEach((outputLayerNeuron) => {
       const gradients = [];
-      const hiddenLayers = JSON.parse(JSON.stringify(this.hiddenLayers));
-      hiddenLayers.reverse()[0].neurons.forEach((neuron, neuronIndex) => {
+      this.hiddenLayers.slice().reverse()[0].neurons.forEach((neuron, neuronIndex) => {
         let gradient = neuron.output * outputLayerNeuron.error;
         gradient += this.regularizationValue * outputLayerNeuron.weights[neuronIndex];
         gradients.push(gradient);
