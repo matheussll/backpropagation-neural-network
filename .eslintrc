@@ -8,6 +8,12 @@
             {
                 "props": false
             }
+        ],
+        "object-curly-newline": [
+            "error",
+            {
+                "ObjectExpression": "never"
+            }
         ]
     }
 }

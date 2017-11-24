@@ -1,7 +1,7 @@
 const trainingSet = [
   { input: [30, 64, 1], output: [0] },
   { input: [30, 62, 3], output: [0] },
-  { input: [30, 65, 0], output: [0] },
+  { input: [30, 65, 3], output: [0] },
   { input: [31, 59, 2], output: [0] },
   { input: [31, 65, 4], output: [0] },
   { input: [33, 58, 10], output: [0] },
