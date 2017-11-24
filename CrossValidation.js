@@ -1,5 +1,3 @@
-import Network from './Network';
-
 const createCrossValidationsSets = (dataSet) => {
   const validationSet = JSON.parse(JSON.stringify(dataSet));
   const trainingSet = validationSet.splice(0, validationSet.length * 0.8);

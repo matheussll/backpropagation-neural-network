@@ -42,11 +42,8 @@ class Network {
         this.outputLayer.neurons.forEach((neuron) => {
           neuron.inputs = outputs;
           neuron.activate(neuron.inputs);
-<<<<<<< Updated upstream
-=======
           // console.log(neuron.output);
           // console.log('neuron da ult camada tem ativação = ', neuron.output);/////////////////////////////////////////////
->>>>>>> Stashed changes
         });
       }
     });
@@ -180,11 +177,7 @@ class Network {
     trainingSet.forEach((item) => {
       item.input.unshift(1);
     });
-<<<<<<< Updated upstream
-    for (let i = 0; i < 20000; i += 1) {
-=======
     for (let i = 0; i < 50; i += 1) {
->>>>>>> Stashed changes
       let sum = 0;
       trainingSet.forEach((item) => {
         this.forwardPropagate(item.input);
