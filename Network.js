@@ -42,6 +42,11 @@ class Network {
         this.outputLayer.neurons.forEach((neuron) => {
           neuron.inputs = outputs;
           neuron.activate(neuron.inputs);
+<<<<<<< Updated upstream
+=======
+          // console.log(neuron.output);
+          // console.log('neuron da ult camada tem ativação = ', neuron.output);/////////////////////////////////////////////
+>>>>>>> Stashed changes
         });
       }
     });
@@ -51,7 +56,8 @@ class Network {
     this.outputLayer.neurons.forEach((neuron, neuronIndex) => {
       neuron.error = (neuron.output - expectedOutput[neuronIndex]);
     });
-    this.hiddenLayers.slice().reverse().forEach((layer, index) => {
+    const hiddenLayers = JSON.parse(JSON.stringify(this.hiddenLayers));
+    hiddenLayers.reverse().forEach((layer, index) => {
       if (!index) {
         layer.neurons.forEach((neuron, neuronIndex) => {
           if (neuronIndex) {
@@ -67,7 +73,8 @@ class Network {
         layer.neurons.forEach((neuron, neuronIndex) => {
           if (neuronIndex) {
             let errorSum = 0;
-            this.hiddenLayers.slice().reverse()[index - 1].neurons.forEach((previousLayerNeuron) => {
+            const hiddenLayers = JSON.parse(JSON.stringify(this.hiddenLayers));
+            hiddenLayers.reverse()[index - 1].neurons.forEach((previousLayerNeuron) => {
               errorSum += previousLayerNeuron.weights[neuronIndex] * previousLayerNeuron.error;
             });
             const error = errorSum * neuron.outputDerivative;
@@ -81,7 +88,8 @@ class Network {
   calculateGradientsAndUpdateWeights() {
     this.outputLayer.neurons.forEach((outputLayerNeuron) => {
       const gradients = [];
-      this.hiddenLayers.slice().reverse()[0].neurons.forEach((neuron, neuronIndex) => {
+      const hiddenLayers = JSON.parse(JSON.stringify(this.hiddenLayers));
+      hiddenLayers.reverse()[0].neurons.forEach((neuron, neuronIndex) => {
         let gradient = neuron.output * outputLayerNeuron.error;
         gradient += this.regularizationValue * outputLayerNeuron.weights[neuronIndex];
         gradients.push(gradient);
@@ -167,11 +175,16 @@ class Network {
     return sum;
   }
 
-  train(trainingSet) {
+  train(set) {
+    const trainingSet = JSON.parse(JSON.stringify(set));
     trainingSet.forEach((item) => {
       item.input.unshift(1);
     });
+<<<<<<< Updated upstream
     for (let i = 0; i < 20000; i += 1) {
+=======
+    for (let i = 0; i < 50; i += 1) {
+>>>>>>> Stashed changes
       let sum = 0;
       trainingSet.forEach((item) => {
         this.forwardPropagate(item.input);
