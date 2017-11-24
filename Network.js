@@ -43,7 +43,7 @@ class Network {
           neuron.inputs = outputs;
           neuron.activate(neuron.inputs);
           // console.log(neuron.output);
-          console.log('neuron da ult camada tem ativação = ', neuron.output);/////////////////////////////////////////////
+          // console.log('neuron da ult camada tem ativação = ', neuron.output);/////////////////////////////////////////////
         });
       }
     });
@@ -174,8 +174,9 @@ class Network {
     trainingSet.forEach((item) => {
       item.input.unshift(1);
     });
-    for (let i = 0; i < 50; i += 1) {
-      let sum = 0;
+    let sum;
+    for (let i = 0; i < 500; i += 1) {
+      sum = 0;
       trainingSet.forEach((item) => {
         this.forwardPropagate(item.input);
         this.backwardsErrorPropagation(item.output);
@@ -185,18 +186,19 @@ class Network {
       });
       sum /= trainingSet.length;
       sum += this.regularization(trainingSet.length);
-      console.log('custo final: ', sum);
     }
+    console.log('custo final: ', sum);
   }
 
   predict(input) {
-    input.unshift(1);
+    const validationSet = JSON.parse(JSON.stringify(input));
+    validationSet.unshift(1);
     this.forwardPropagate(input);
     const outputs = [];
     this.outputLayer.neurons.forEach((neuron) => {
       outputs.push(neuron.output);
     });
-    console.log('Outputs: ', outputs);
+    return outputs;
   }
 }
 

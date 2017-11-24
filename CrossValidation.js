@@ -8,7 +8,7 @@ const dataSetToFolds = (dataSet) => {
   const folds = [];
   const dataSetCopy = JSON.parse(JSON.stringify(dataSet));
   while (dataSetCopy.length) {
-    folds.push(dataSetCopy.splice(0, dataSet.length / 4));
+    folds.push(dataSetCopy.splice(0, dataSet.length / 5));
   }
   return folds;
 };
@@ -30,8 +30,9 @@ const createNetworkTestSets = (folds) => {
     folds.forEach((fold, foldIndex) => {
       if (foldIndex !== i) {
         trainingSet = trainingSet.concat(fold);
+      } else {
+        validationSet = fold;
       }
-      validationSet = fold;
     });
     sets.push({ validationSet, trainingSet });
   }
@@ -40,6 +41,9 @@ const createNetworkTestSets = (folds) => {
 
 class CrossValidation {
   constructor(trainingSet, networks) {
+    if (trainingSet.length < 5) {
+      throw 'Número insuficiente de entradas de treinamento';
+    }
     this.trainingSet = trainingSet;
     this.accuracy = 0;
     this.recall = 0;
@@ -55,15 +59,27 @@ class CrossValidation {
 
   train() {
     this.networks.forEach((network, networkIndex) => {
+      console.log(this.crossValidationSets[networkIndex].validationSet.length);
       network.train(this.crossValidationSets[networkIndex].trainingSet);
       console.log('=================================');
     });
+    this.test();
     // this.networks[1].train(this.trainingSet);
   }
 
   test() {
     this.networks.forEach((network, networkIndex) => {
-      // console.log(network.outputLayer.neurons[0].output);
+      const outputs = [];
+      this.crossValidationSets[networkIndex].validationSet.forEach((entry) => {
+        const output = network.predict(entry.input);
+        // console.log(output);
+        const i = output.indexOf(Math.max(...output));
+        const outputNormalized = output.map((value, index) => (index === i ? 1 : 0));
+        console.log('output obtido: ', outputNormalized, 'output esperado: ', entry.output, 'rede numero: ', networkIndex);
+
+        outputs.push(outputNormalized);
+      });
+      // console.log(outputs);
     });
   }
 

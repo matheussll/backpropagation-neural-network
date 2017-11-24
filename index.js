@@ -49,11 +49,11 @@ const trainingSetNormalized = normalize(normalizationValues(TrainingSet));
 
 const networks = [];
 const networksParamsToTest = [
-  { hiddenNeurons: 5, hiddenLayers: 3, learningRate: 0.5, regularizationValue: 0.002 },
-  { hiddenNeurons: 1, hiddenLayers: 1, learningRate: 0.5, regularizationValue: 0.3 },
-  { hiddenNeurons: 2, hiddenLayers: 2, learningRate: 0.8, regularizationValue: 0.3 },
-  { hiddenNeurons: 2, hiddenLayers: 1, learningRate: 0.1, regularizationValue: 0.1 },
-  { hiddenNeurons: 2, hiddenLayers: 1, learningRate: 0.1, regularizationValue: 0.1 },
+  { hiddenNeurons: 50, hiddenLayers: 1, learningRate: 0.8, regularizationValue: 0.0002 },
+  { hiddenNeurons: 1, hiddenLayers: 1, learningRate: 0.5, regularizationValue: 0.0001 },
+  { hiddenNeurons: 2, hiddenLayers: 2, learningRate: 0.5, regularizationValue: 0.002 },
+  { hiddenNeurons: 3, hiddenLayers: 2, learningRate: 0.2, regularizationValue: 0.002 },
+  { hiddenNeurons: 5, hiddenLayers: 1, learningRate: 0.9, regularizationValue: 0.0002 },
 ];
 
 networksParamsToTest.forEach((param) => {
@@ -65,5 +65,5 @@ networksParamsToTest.forEach((param) => {
 const crossValidation = new CrossValidation(trainingSetNormalized, networks);
 const network = new Network(trainingSetNormalized[0].input.length, networksParamsToTest[0].hiddenNeurons, networksParamsToTest[0].hiddenLayers, trainingSetNormalized[0].output.length, networksParamsToTest[0].learningRate, networksParamsToTest[0].regularizationValue);
 
-network.train(trainingSetNormalized);
-// crossValidation.train();
+// network.train(trainingSetNormalized);
+crossValidation.train();
