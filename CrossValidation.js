@@ -59,9 +59,9 @@ class CrossValidation {
 
   train() {
     this.networks.forEach((network, networkIndex) => {
-      console.log(this.crossValidationSets[networkIndex].validationSet.length);
+      //console.log(this.crossValidationSets[networkIndex].validationSet.length);
       network.train(this.crossValidationSets[networkIndex].trainingSet);
-      console.log('=================================');
+      //console.log('=================================');
     });
     this.test();
     // this.networks[1].train(this.trainingSet);
@@ -70,47 +70,98 @@ class CrossValidation {
   test() {
     this.networks.forEach((network, networkIndex) => {
       const outputs = [];
+      const expectedOutputs = [];
       this.crossValidationSets[networkIndex].validationSet.forEach((entry) => {
         const output = network.predict(entry.input);
         // console.log(output);
         const i = output.indexOf(Math.max(...output));
         const outputNormalized = output.map((value, index) => (index === i ? 1 : 0));
-        console.log('output obtido: ', outputNormalized, 'output esperado: ', entry.output, 'rede numero: ', networkIndex);
+        //console.log('output obtido: ', outputNormalized, 'output esperado: ', entry.output, 'rede numero: ', networkIndex);
 
         outputs.push(outputNormalized);
+        expectedOutputs.push(entry.output);
+
       });
+
+      const classes = [
+        { output: [0, 0, 1] },
+        { output: [0, 1, 0] },
+        { output: [1, 0, 0] }];
+
+      classes.forEach((positiveClass, index) => {
+        //const parameters = [{vp: 0, vn: 0, fp: 0, fn: 0}];
+        const parameters = this.calculatePerformance(outputs, expectedOutputs, index, parameters, positiveClass.output);
+        //console.log('metricas de desempenho: ', parameters);
+      });
+      console.log('=================================');
       // console.log(outputs);
     });
   }
 
-  // calculatePerformance() {
-  //   const vp = 0;
-  //   const vn = 0;
-  //   const fp = 0;
-  //   const fn = 0;
+  calculatePerformance(outputNormalized, output, index, parameters, positiveClass) {
+    let vp = 0;
+    let vn = 0;
+    let fp = 0;
+    let fn = 0;
 
-  //   const predictedValue = trainingSet.outputNeurons;
-  //   this.trainingSet.output.forEach(expectedValue, (index) => {
-  //     if (0) { // expectedValue > 0.5 && predictedValue > 0.5
-  //       // expects positive, predicts positive
-  //       vp++;
-  //     } else if (1) { // expectedValue < 0.5 && predictedValue > 0.5
-  //       //  expects negative, predicts positive
-  //       fp++;
-  //     } else if (2) { // expectedValue > 0.5 && predictedValue < 0.5
-  //       //  expects positive, predicts negative
-  //       fn++;
-  //     } else if (3) { // expectedValue < 0.5 && predictedValue < 0.5
-  //       //  expects negative, predicts negative
-  //       vn++;
-  //     }
-  //   });
-  //   const n = vp + vn + fp + fn;
+    for(let i = 0; i < outputNormalized.length; i++){
+      let pred = outputNormalized[i];
+      let out = output[i];
 
-  //   this.accuracy = (vp + fn) / n;
-  //   this.recall = (vp) / (vp + fn);
-  //   this.precision = (vp) / (vp + fp);
-  // }
+      if((pred[0] == out[0] 
+        && pred[1] == out[1] 
+        && pred[2] == out[2])
+        && pred[0] == positiveClass[0] 
+        && pred[1] == positiveClass[1] 
+        && pred[2] == positiveClass[2]){
+          vp++;
+      }
+      else if((pred[0] != out[0] 
+        || pred[1] != out[1] 
+        || pred[2] != out[2]) 
+        && pred[0] == positiveClass[0] 
+        && pred[1] == positiveClass[1] 
+        && pred[2] == positiveClass[2]){
+          fp++;
+      }
+      else if((pred[0] != out[0]
+        || pred[1] != out[1] 
+        || pred[2] != out[2]) 
+        && (pred[0] != positiveClass[0] 
+        || pred[1] != positiveClass[1] 
+        || pred[2] != positiveClass[2])){
+          fn++;
+      }
+      else if((pred[0] == out[0]
+        && pred[1] == out[1] 
+        && pred[2] == out[2]) 
+        && (pred[0] != positiveClass[0] 
+        || pred[1] != positiveClass[1] 
+        || pred[2] != positiveClass[2])){
+          vn++;
+      }
+    }
+
+    const n = vp + vn + fp + fn;
+
+    let accuracy = (vp + fn) / n;
+    let recall = (vp) / (vp + fn);
+    let precision = (vp) / (vp + fp);
+    
+    if((vp + fn) == 0){
+      let recall = 0;
+    }
+    if((vp + fp) == 0){
+      let precision = 0;
+    }
+    if(vp == 0){
+      let recall = 0;
+      let precision = 0;
+    }
+
+    console.log('acc: ', accuracy, 'rec: ', recall, 'prec: ', precision);
+    return {index, vp, fp, fn, vn};
+  }
 }
 
 export default CrossValidation;

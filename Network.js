@@ -187,7 +187,7 @@ class Network {
       sum /= trainingSet.length;
       sum += this.regularization(trainingSet.length);
     }
-    console.log('custo final: ', sum);
+    //console.log('custo final: ', sum);
   }
 
   predict(input) {
