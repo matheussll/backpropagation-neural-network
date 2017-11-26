@@ -140,9 +140,8 @@ class Network {
   calculateCostFunction2(expectedOutput) {
     let sum = 0;
     this.outputLayer.neurons.forEach((neuron, neuronIndex) => {
-      const e = 10 ** -8;
-      let cost = -expectedOutput[neuronIndex] * Math.log(neuron.output + e);
-      cost += -(1 - expectedOutput[neuronIndex]) * Math.log((1 - neuron.output) + e);
+      let cost = -expectedOutput[neuronIndex] * Math.log(neuron.output);
+      cost += -(1 - expectedOutput[neuronIndex]) * Math.log((1 - neuron.output));
       sum += cost;
     });
     return sum;

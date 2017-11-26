@@ -64,35 +64,114 @@ class CrossValidation {
       //console.log('=================================');
     });
     this.test();
-    // this.networks[1].train(this.trainingSet);
+
+    // To get performance parameters from a single network (networks[index])
+    // const errors = [];
+    // this.validationSet.forEach((entry) => {
+    //   const output = this.networks[1].predict(entry.input);
+    //   // console.log(output);
+    //   const i = output.indexOf(Math.max(...output));
+    //   const outputNormalized = output.map((value, index) => (index === i ? 1 : 0));
+    //   //console.log('output obtido: ', outputNormalized, 'output esperado: ', entry.output);
+    //   errors.push(this.networks[1].calculateCostFunction(entry.output));
+    // });
+
+    // errors.forEach(error =>{
+    //     //console.log('error: ', error);
+    // });
+    
+  }
+
+  train2(){
+    const newSets0 = [];
+    const newSets1 = [];
+    const newSets2 = [];
+    const newSets3 = [];
+    this.crossValidationSets[1].trainingSet.forEach((entry, index)=>{
+      if(index >= 15){
+        newSets3.push(entry);
+      }
+      else if(index >= 10){
+        newSets3.push(entry);
+        newSets2.push(entry);
+      }
+      else if(index >= 5){
+        newSets3.push(entry);
+        newSets2.push(entry);
+        newSets1.push(entry);
+      }
+      else if(index < 5){
+        newSets3.push(entry);
+        newSets2.push(entry);
+        newSets1.push(entry);
+        newSets0.push(entry);
+      }
+    });
+    
+    const outputs = [];
+    const expectedOutputs = [];
+
+    this.networks[1].train(newSets3);
+    this.validationSet.forEach((entry) =>{
+      const output = this.networks[1].predict(entry.input);
+      const i = output.indexOf(Math.max(...output));
+      const outputNormalized = output.map((value, index) => (index === i ? 1 : 0));
+
+      outputs.push(outputNormalized);
+      expectedOutputs.push(entry.output);
+    });
+
+    // const classes = [
+    //   { output: [0, 0, 1] },
+    //   { output: [0, 1, 0] },
+    //   { output: [1, 0, 0] }];
+
+      const classes = [
+        { output: [0] },
+        { output: [1] }];
+
+    classes.forEach((positiveClass, index) => {
+      //const parameters = [{vp: 0, vn: 0, fp: 0, fn: 0}];
+      const parameters = this.calculatePerformance(outputs, expectedOutputs, index, parameters, positiveClass.output);
+      //console.log('metricas de desempenho: ', parameters);
+    });
+    //console.log('=================================');
+    
   }
 
   test() {
     this.networks.forEach((network, networkIndex) => {
+      console.log('modelo: ', networkIndex);
+      console.log('----------');
       const outputs = [];
       const expectedOutputs = [];
       this.crossValidationSets[networkIndex].validationSet.forEach((entry) => {
         const output = network.predict(entry.input);
-        // console.log(output);
         const i = output.indexOf(Math.max(...output));
         const outputNormalized = output.map((value, index) => (index === i ? 1 : 0));
         //console.log('output obtido: ', outputNormalized, 'output esperado: ', entry.output, 'rede numero: ', networkIndex);
-
+        
         outputs.push(outputNormalized);
         expectedOutputs.push(entry.output);
 
       });
 
+      // For 3 output classes
       const classes = [
         { output: [0, 0, 1] },
         { output: [0, 1, 0] },
         { output: [1, 0, 0] }];
 
+        // For binary outputs
+        // const classes = [
+        //   { output: [0] },
+        //   { output: [1] }];
+
       classes.forEach((positiveClass, index) => {
-        //const parameters = [{vp: 0, vn: 0, fp: 0, fn: 0}];
         const parameters = this.calculatePerformance(outputs, expectedOutputs, index, parameters, positiveClass.output);
-        //console.log('metricas de desempenho: ', parameters);
+        console.log('metricas de desempenho: ', parameters);
       });
+
       console.log('=================================');
       // console.log(outputs);
     });
@@ -108,6 +187,7 @@ class CrossValidation {
       let pred = outputNormalized[i];
       let out = output[i];
 
+      // For 3 output classes
       if((pred[0] == out[0] 
         && pred[1] == out[1] 
         && pred[2] == out[2])
@@ -140,6 +220,20 @@ class CrossValidation {
         || pred[2] != positiveClass[2])){
           vn++;
       }
+
+      // For binary outputs
+      // if((pred[0] == out[0]) && pred[0] == positiveClass[0] ){ 
+      //   vp++;
+      // }
+      // else if(pred[0] != out[0] && pred[0] == positiveClass[0] ){ 
+      //   fp++;
+      // }
+      // else if(pred[0] != out[0] && pred[0] != positiveClass[0]){ 
+      //   fn++;
+      // }
+      // else if(pred[0] == out[0] && pred[0] != positiveClass[0]){  
+      //   vn++;
+      // }
     }
 
     const n = vp + vn + fp + fn;
@@ -148,19 +242,20 @@ class CrossValidation {
     let recall = (vp) / (vp + fn);
     let precision = (vp) / (vp + fp);
     
-    if((vp + fn) == 0){
-      let recall = 0;
-    }
-    if((vp + fp) == 0){
-      let precision = 0;
-    }
-    if(vp == 0){
-      let recall = 0;
-      let precision = 0;
-    }
+    // if((vp + fn) == 0){
+    //   let recall = 0;
+    // }
+    // if((vp + fp) == 0){
+    //   let precision = 0;
+    // }
+    // if(vp == 0){
+    //   let recall = 0;
+    //   let precision = 0;
+    // }
 
-    console.log('acc: ', accuracy, 'rec: ', recall, 'prec: ', precision);
-    return {index, vp, fp, fn, vn};
+    //console.log('acc: ', accuracy, 'rec: ', recall, 'prec: ', precision);
+    //return {index, vp, fp, fn, vn, accuracy};+
+    return {index, accuracy};
   }
 }
 
