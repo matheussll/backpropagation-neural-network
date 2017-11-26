@@ -19,6 +19,37 @@ class Network {
     this.regularizationValue = regularizationValue;
   }
 
+  setupTestNetwork() {
+    const modifiedNetworks = [];
+    const trainingSet = [{ input: [0.81], output: [1] }];
+    const epslon = 0.000005;
+    const gradients = [];
+    const errorsPlusEpslon = [];
+    const errorsMinusEpslon = [];
+    const numericGradients = [];
+    const w = [];
+
+    for (let i = 0; i < 4; i++) {
+      w.push(Math.random());
+    }
+
+    this.hiddenLayers[0].neurons[0].output = 0;
+    this.hiddenLayers[0].neurons[1].weights[1] = w[0];
+    this.hiddenLayers[0].neurons[2].weights[1] = w[1];
+    this.outputLayer.neurons[0].weights[1] = w[2];
+    this.outputLayer.neurons[0].weights[2] = w[3];
+
+    trainingSet[0].input.unshift(0);
+
+    console.log('original weights: ', this.hiddenLayers[0].neurons[1].weights[1], this.hiddenLayers[0].neurons[2].weights[1], this.outputLayer.neurons[0].weights[1], this.outputLayer.neurons[0].weights[2]);
+
+    this.forwardPropagate(trainingSet[0].input);
+    this.backwardsErrorPropagation(trainingSet[0].output);
+    this.calculateGradientsAndUpdateWeights();
+
+    return w;
+  }
+
   forwardPropagate(inputs) {
     this.inputs = inputs;
     this.hiddenLayers[0].neurons.forEach((neuron) => {
