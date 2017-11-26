@@ -144,11 +144,11 @@ diff[1] = numericGradients[1] - gradients[1];
 diff[2] = numericGradients[2] - gradients[2];
 diff[3] = numericGradients[3] - gradients[3];
 
-console.log('Gradient Checking (syntax: weightIndex numericGradient gradient diff)', 0, numericGradients[0], gradients[0], diff[0]);
-console.log('Gradient Checking (syntax: weightIndex numericGradient gradient diff)', 1, numericGradients[1], gradients[1], diff[1]);
-console.log('Gradient Checking (syntax: weightIndex numericGradient gradient diff)', 2, numericGradients[2], gradients[2], diff[2]);
-console.log('Gradient Checking (syntax: weightIndex numericGradient gradient diff)', 3, numericGradients[3], gradients[3], diff[3]);
-
+console.log('================= Gradient Checking =================');
+console.log('Index: ', 0, ' - Numeric Gradient: ', numericGradients[0], ' - Gradient: ', gradients[0], ' - Diff: ', diff[0]);
+console.log('Index: ', 1, ' - Numeric Gradient: ', numericGradients[1], ' - Gradient: ', gradients[1], ' - Diff: ', diff[1]);
+console.log('Index: ', 2, ' - Numeric Gradient: ', numericGradients[2], ' - Gradient: ', gradients[2], ' - Diff: ', diff[2]);
+console.log('Index: ', 3, ' - Numeric Gradient: ', numericGradients[3], ' - Gradient: ', gradients[3], ' - Diff: ', diff[3]);
 
 function calculateCostFunction3(network, expectedOutput) {
   let cost = -expectedOutput * Math.log(network.outputLayer.neurons[0].output);
