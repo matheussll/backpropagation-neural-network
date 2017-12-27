@@ -1,0 +1,35 @@
+{
+  "name": "backpropagation-neural-network",
+  "version": "1.0.0",
+  "description": "This project consists in a neural network implementation that is trained using backpropagation",
+  "main": "index.js",
+  "dependencies": {
+    "eslint": "^4.10.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.4.0",
+    "rimraf": "^2.6.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "babel-node index.js",
+    "debug": "babel-node index.js --inspect-brk",
+    "check-gradient": "babel-node CheckNetwork.js"        
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matheussll/backpropagation-neural-network.git"
+  },
+  "author": "Matheus Luz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/matheussll/backpropagation-neural-network/issues"
+  },
+  "homepage": "https://github.com/matheussll/backpropagation-neural-network#readme"
+}
